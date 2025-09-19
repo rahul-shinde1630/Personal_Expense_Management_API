@@ -15,7 +15,7 @@ import com.pem.entity.Expense;
 import com.pem.entity.UserEntity;
 
 @Repository
-public interface ExpenceRepository extends JpaRepository<Expense, Integer> {
+public interface ExpenseRepository extends JpaRepository<Expense, Integer> {
 
 	Optional<Expense> findById(Long id);
 
@@ -37,4 +37,9 @@ public interface ExpenceRepository extends JpaRepository<Expense, Integer> {
 	Expense findByIdAndUser(int id, UserEntity user);
 
 	List<Expense> findByUserAndExpenseDateBetweenAndIsDeletedFalse(UserEntity user, LocalDate start, LocalDate end);
+
+	@Query("SELECT COALESCE(SUM(e.amount), 0) FROM Expense e "
+			+ "WHERE e.user.id = :userId AND e.expenseDate BETWEEN :start AND :end AND e.isDeleted = false")
+	Double findByTotalUserAndMonthYearAndIsDeletedFalse(@Param("userId") int userId, @Param("start") LocalDate start,
+			@Param("end") LocalDate end);
 }

@@ -10,6 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 public class PersonalExpenseManagementApplicationApi extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(PersonalExpenseManagementApplicationApi.class, args);
 	}
 

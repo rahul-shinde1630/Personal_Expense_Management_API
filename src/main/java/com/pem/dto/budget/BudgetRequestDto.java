@@ -1,5 +1,7 @@
 package com.pem.dto.budget;
 
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +15,7 @@ public class BudgetRequestDto {
 	private String title;
 	private double amount;
 	private String category;
-	private String fromDate;
-	private String toDate;
+	private LocalDate fromDate;
+	private LocalDate toDate;
 	private String user;
 }

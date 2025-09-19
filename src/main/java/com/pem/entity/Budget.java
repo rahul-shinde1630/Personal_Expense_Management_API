@@ -1,5 +1,7 @@
 package com.pem.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,10 +27,10 @@ public class Budget {
 	private String category;
 
 	@Column(name = "from_date")
-	private String fromDate;
+	private LocalDate fromDate;
 
 	@Column(name = "to_date")
-	private String toDate;
+	private LocalDate toDate;
 
 	@ManyToOne()
 	@JoinColumn(name = "user_id")
@@ -39,7 +41,7 @@ public class Budget {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Budget(Long id, String title, double amount, String category, String fromDate, String toDate,
+	public Budget(Long id, String title, double amount, String category, LocalDate fromDate, LocalDate toDate,
 			UserEntity user, boolean isDeleted) {
 		super();
 		this.id = id;
@@ -92,19 +94,19 @@ public class Budget {
 		this.category = category;
 	}
 
-	public String getFromDate() {
+	public LocalDate getFromDate() {
 		return fromDate;
 	}
 
-	public void setFromDate(String fromDate) {
+	public void setFromDate(LocalDate fromDate) {
 		this.fromDate = fromDate;
 	}
 
-	public String getToDate() {
+	public LocalDate getToDate() {
 		return toDate;
 	}
 
-	public void setToDate(String toDate) {
+	public void setToDate(LocalDate toDate) {
 		this.toDate = toDate;
 	}
 

@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.pem.dto.budget.BudgetRequestDto;
@@ -82,6 +86,39 @@ public class BudgetServicedimpl implements BudgetService {
 		} else {
 			System.out.println("LentMoney not found with id: " + id);
 			return false;
+		}
+	}
+
+	@Override
+	public List<String> getCategoriesByUser(String email) {
+		try {
+			return budgetRepository.findDistinctCategoriesByUser(email);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return List.of();
+		}
+	}
+
+	@Override
+	public Page<BudgetResponseDto> filterBudgets(String email, String category, int page, int size) {
+		try {
+			Pageable pageable = PageRequest.of(page, size, Sort.by("fromDate").descending());
+
+			Page<Budget> budgetPage;
+
+			if (category == null || category.isEmpty()) {
+				// No category filter, return all budgets for the user
+				budgetPage = budgetRepository.findByUserEmail(email, pageable);
+			} else {
+				// Filter by category
+				budgetPage = budgetRepository.findByUserEmailAndCategory(email, category, pageable);
+			}
+
+			return budgetPage.map(budgetMapper::toDto);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Page.empty();
 		}
 	}
 

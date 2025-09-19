@@ -24,7 +24,7 @@ import com.pem.mapper.EditMapper;
 import com.pem.mapper.ExpenseMapper;
 import com.pem.repository.BankRepository;
 import com.pem.repository.CategoryRepository;
-import com.pem.repository.ExpenceRepository;
+import com.pem.repository.ExpenseRepository;
 import com.pem.repository.UserRepository;
 import com.pem.repository.UsersRepository;
 import com.pem.service.ExpenseService;
@@ -32,7 +32,7 @@ import com.pem.service.ExpenseService;
 @Service
 public class ExpenseServiceimpl implements ExpenseService {
 	@Autowired
-	private ExpenceRepository expenseRepository;
+	private ExpenseRepository expenseRepository;
 	@Autowired
 	private ExpenseMapper expenseMapper;
 	@Autowired

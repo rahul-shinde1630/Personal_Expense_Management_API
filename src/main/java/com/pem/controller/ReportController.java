@@ -13,11 +13,23 @@ import com.pem.service.ReportService;
 @RequestMapping("/api/reports")
 @CrossOrigin(origins = "*")
 public class ReportController {
+
 	@Autowired
-	ReportService reportService;
+	private ReportService reportService;
 
 	@GetMapping("/income")
 	public Double getIncome(@RequestParam String email, @RequestParam int month, @RequestParam int year) {
 		return reportService.getIncomeByUserAndMonthAndYear(email, month, year);
 	}
+
+	@GetMapping("/expense")
+	public Double getExpense(@RequestParam String email, @RequestParam int month, @RequestParam int year) {
+		return reportService.getExpenseByUserAndMonthAndYear(email, month, year);
+	}
+
+	@GetMapping("/borrowedRemaining")
+	public Double getBorrowedRemaining(@RequestParam String email, @RequestParam int month, @RequestParam int year) {
+		return reportService.getBorrowedRemaining(email, month, year);
+	}
+
 }
