@@ -54,4 +54,8 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
 	Double findByUserAndMonthYearAndIsDeletedFalse(@Param("userId") int userId, @Param("start") LocalDate start,
 			@Param("end") LocalDate end);
 
+	@Query("SELECT i.category.name, SUM(i.amount) " + "FROM Income i "
+			+ "WHERE i.user.email = :email AND i.incomeDate >= :startDate " + "GROUP BY i.category.name")
+	List<Object[]> findIncomeByCategory(@Param("email") String email, @Param("startDate") LocalDate startDate);
+
 }

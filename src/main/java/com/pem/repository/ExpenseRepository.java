@@ -38,8 +38,20 @@ public interface ExpenseRepository extends JpaRepository<Expense, Integer> {
 
 	List<Expense> findByUserAndExpenseDateBetweenAndIsDeletedFalse(UserEntity user, LocalDate start, LocalDate end);
 
-	@Query("SELECT COALESCE(SUM(e.amount), 0) FROM Expense e "
-			+ "WHERE e.user.id = :userId AND e.expenseDate BETWEEN :start AND :end AND e.isDeleted = false")
-	Double findByTotalUserAndMonthYearAndIsDeletedFalse(@Param("userId") int userId, @Param("start") LocalDate start,
+	@Query("SELECT COALESCE(SUM(e.amount), 0) " + "FROM Expense e " + "WHERE e.user.id = :userId "
+			+ "AND e.expenseDate BETWEEN :start AND :end " + "AND e.isDeleted = false")
+	double findByTotalUserAndMonthYearAndIsDeletedFalse(@Param("userId") int userId, @Param("start") LocalDate start,
 			@Param("end") LocalDate end);
+
+	@Query("SELECT COALESCE(SUM(e.amount), 0) FROM Expense e " + "WHERE e.user.email = :email AND e.isDeleted = false "
+			+ "AND e.expenseDate BETWEEN :start AND :end")
+	Double findTotalSpentBetween(@Param("email") String email, @Param("start") LocalDate start,
+			@Param("end") LocalDate end);
+
+	@Query("SELECT e.category.name, SUM(e.amount) FROM Expense e "
+			+ "WHERE e.user.email = :email AND e.isDeleted = false " + "AND e.expenseDate BETWEEN :start AND :end "
+			+ "GROUP BY e.category.name")
+	List<Object[]> findCategoryWiseTotalBetween(@Param("email") String email, @Param("start") LocalDate start,
+			@Param("end") LocalDate end);
+
 }

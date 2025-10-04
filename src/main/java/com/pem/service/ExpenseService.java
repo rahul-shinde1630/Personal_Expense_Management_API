@@ -22,4 +22,6 @@ public interface ExpenseService {
 
 	Page<ExpenseResponseDto> getFilteredExpensesWithPagination(String email, String filterType, String filterValue,
 			int page, int size);
+
+	Object analyzeSpending(String email, int month, int year);
 }

@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 
 @Entity
 @Table(name = "users")
@@ -15,6 +16,7 @@ public class UserEntity {
 	private int user_id;
 
 	private String name;
+	@Email(message = "email is wrong")
 	private String email;
 
 	@Column(nullable = false)

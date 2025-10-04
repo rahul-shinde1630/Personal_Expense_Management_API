@@ -1,7 +1,9 @@
 package com.pem.serviceimpl;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.pem.dto.expense.ExpenseAnalysisResponseDto;
 import com.pem.dto.expense.ExpenseDto;
 import com.pem.dto.expense.ExpenseRequestDto;
 import com.pem.dto.expense.ExpenseResponseDto;
@@ -170,6 +173,73 @@ public class ExpenseServiceimpl implements ExpenseService {
 		}
 
 		return filteredExpenses.map(expenseMapper::toResponseDto);
+	}
+
+	@Override
+	public ExpenseAnalysisResponseDto analyzeSpending(String email, int month, int year) {
+		// Current month start and end
+		LocalDate start = LocalDate.of(year, month, 1);
+		LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
+
+		// Total spent in current month
+		Double totalSpent = expenseRepository.findTotalSpentBetween(email, start, end);
+		if (totalSpent == null) {
+			totalSpent = 0.0;
+		}
+
+		// Category-wise total
+		List<Object[]> categoryData = expenseRepository.findCategoryWiseTotalBetween(email, start, end);
+
+		Map<String, Double> categoryWisePercent = new HashMap<>();
+		String topCategory = "";
+		double topPercent = 0.0;
+
+		// Calculate percentages
+		if (totalSpent > 0) {
+			for (Object[] row : categoryData) {
+				String category = (String) row[0];
+				Double amount = ((Number) row[1]).doubleValue();
+				double percent = (amount / totalSpent) * 100;
+
+				categoryWisePercent.put(category, percent);
+
+				if (percent > topPercent) {
+					topPercent = percent;
+					topCategory = category;
+				}
+			}
+		}
+
+		// Last month comparison
+		int lastMonth = (month == 1) ? 12 : month - 1;
+		int lastYear = (month == 1) ? year - 1 : year;
+
+		LocalDate lastStart = LocalDate.of(lastYear, lastMonth, 1);
+		LocalDate lastEnd = lastStart.withDayOfMonth(lastStart.lengthOfMonth());
+
+		Double lastMonthTotal = expenseRepository.findTotalSpentBetween(email, lastStart, lastEnd);
+		if (lastMonthTotal == null) {
+			lastMonthTotal = 0.0;
+		}
+
+		String monthComparison = "No data available for comparison";
+		if (lastMonthTotal > 0 && totalSpent > 0) {
+			double growth = ((totalSpent - lastMonthTotal) / lastMonthTotal) * 100;
+			monthComparison = (growth >= 0)
+					? "This month you spent " + String.format("%.2f", growth) + "% more compared to last month"
+					: "This month you spent " + String.format("%.2f", Math.abs(growth))
+							+ "% less compared to last month";
+		}
+
+		// Build response
+		ExpenseAnalysisResponseDto dto = new ExpenseAnalysisResponseDto();
+		dto.setTotalSpent(totalSpent);
+		dto.setTopCategory(topCategory);
+		dto.setTopCategoryPercent(topPercent);
+		dto.setMonthComparison(monthComparison);
+		dto.setCategoryWisePercent(categoryWisePercent);
+
+		return dto;
 	}
 
 }

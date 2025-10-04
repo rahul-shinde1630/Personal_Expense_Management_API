@@ -16,7 +16,7 @@ public class Expense {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Integer id;
 	private double amount;
 	private LocalDate expenseDate;
 	private String expenseTime;

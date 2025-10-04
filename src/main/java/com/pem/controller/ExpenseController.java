@@ -79,6 +79,13 @@ public class ExpenseController {
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Expense not found");
 		}
+
+	}
+
+	@GetMapping("/expenses/analysis")
+	public ResponseEntity<Object> analyzeSpending(@RequestParam String email, @RequestParam int month,
+			@RequestParam int year) {
+		return ResponseEntity.ok(expenseService.analyzeSpending(email, month, year));
 	}
 
 }
