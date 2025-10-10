@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Data
 public class RepaymentRequestDto {
-
+	private Long referenceId;
 	private Long borrowedId;
 	private Long lentId;
 	private String user;

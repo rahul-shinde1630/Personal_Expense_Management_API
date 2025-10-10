@@ -1,8 +1,10 @@
 package com.pem.serviceimpl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -103,6 +105,22 @@ public class BorrowedMoneyServiceImpl implements BorrowedMoneyService {
 			return false;
 		}
 
+	}
+
+	@Override
+	public List<BorrowedMoneyResponseDto> getUnpaidByEmail(String email) {
+		if (email == null || email.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		// Use the entity's nested Status enum
+		BorrowedMoney.Status paidStatus = BorrowedMoney.Status.PAID;
+
+		// Call repository with @Query
+		List<BorrowedMoney> borrowedList = repository.findUnpaidByEmail(email, paidStatus);
+
+		// Convert to DTOs
+		return borrowedList.stream().map(borrowedMoneyMapper::toResponseDto).collect(Collectors.toList());
 	}
 
 }

@@ -26,7 +26,7 @@ public class LentMoneyController {
 	@Autowired
 	private LentMoneyService service;
 
-	@PostMapping("/save")
+	@PostMapping
 	public boolean save(@RequestBody LentMoneyRequestDto dto) {
 		return service.save(dto);
 	}

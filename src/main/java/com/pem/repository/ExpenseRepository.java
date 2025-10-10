@@ -54,4 +54,6 @@ public interface ExpenseRepository extends JpaRepository<Expense, Integer> {
 	List<Object[]> findCategoryWiseTotalBetween(@Param("email") String email, @Param("start") LocalDate start,
 			@Param("end") LocalDate end);
 
+	List<Expense> findByExpenseDate(LocalDate date);
+
 }

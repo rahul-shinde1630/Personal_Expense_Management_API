@@ -17,7 +17,7 @@ public class RepaymentResponseDto {
 	private Long repaymentId;
 	private String transactionType;
 	private String personName;
-	private long referenceId;
+	private Long referenceId;
 	private double amount;
 	private LocalDate repaymentDate;
 	private String status;

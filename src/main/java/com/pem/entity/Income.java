@@ -9,6 +9,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 @Table(name = "income")
@@ -18,21 +21,30 @@ public class Income {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@NotBlank(message = "Title is required")
 	private String title;
+
+	@Positive(message = "Amount must be greater than 0")
 	private double amount;
+
+	@NotNull(message = "Income date is required")
 	private LocalDate incomeDate;
 
 	private boolean isDeleted = false;
+
 	@ManyToOne
 	@JoinColumn(name = "category_id")
+	@NotNull(message = "Category is required")
 	private Category category;
 
 	@ManyToOne
 	@JoinColumn(name = "bank_id")
+	@NotNull(message = "Bank account is required")
 	private Bank bank;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
+	@NotNull(message = "User is required")
 	private UserEntity user;
 
 	public Income() {

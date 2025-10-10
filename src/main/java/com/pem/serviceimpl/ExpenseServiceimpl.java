@@ -50,15 +50,16 @@ public class ExpenseServiceimpl implements ExpenseService {
 	private CategoryRepository categoryRepository;
 
 	@Override
-	public boolean saveExpense(ExpenseRequestDto dto) {
+	public Expense saveExpense(ExpenseRequestDto dto) {
 		try {
 			Expense entity = expenseMapper.toEntity(dto);
-			expenseRepository.save(entity);
-			return true;
+			Expense result = expenseRepository.save(entity);
+			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
+			return null;
 		}
+
 	}
 
 	@Override
@@ -240,6 +241,12 @@ public class ExpenseServiceimpl implements ExpenseService {
 		dto.setCategoryWisePercent(categoryWisePercent);
 
 		return dto;
+	}
+
+	@Override
+	public List<ExpenseResponseDto> getExpensesByDate(LocalDate date) {
+		List<Expense> expenses = expenseRepository.findByExpenseDate(date);
+		return expenses.stream().map(expenseMapper::toResponseDto).collect(Collectors.toList());
 	}
 
 }

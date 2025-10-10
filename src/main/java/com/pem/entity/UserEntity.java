@@ -7,26 +7,35 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
 public class UserEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int user_id;
 
+	@NotBlank(message = "Name is required")
+	@Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
 	private String name;
-	@Email(message = "email is wrong")
+
+	@Email(message = "Email is invalid")
+	@NotBlank(message = "Email is required")
 	private String email;
 
+	@NotBlank(message = "Password is required")
+	@Size(min = 6, message = "Password must be at least 6 characters")
 	@Column(nullable = false)
 	private String password;
 
 	private String country;
+
 	private boolean checkbox;
 
 	public UserEntity(int user_id, String name, String email, String password, String country, boolean checkbox) {
-		super();
 		this.user_id = user_id;
 		this.name = name;
 		this.email = email;
@@ -36,7 +45,6 @@ public class UserEntity {
 	}
 
 	public UserEntity() {
-		super();
 	}
 
 	public int getId() {
@@ -86,5 +94,4 @@ public class UserEntity {
 	public void setCheckbox(boolean checkbox) {
 		this.checkbox = checkbox;
 	}
-
 }

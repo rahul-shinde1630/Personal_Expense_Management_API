@@ -7,27 +7,29 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
-
 @Table(name = "banks")
 public class Bank {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int bank_id;
 
+	@NotBlank(message = "Bank name is required")
 	private String name;
 
-	@ManyToOne()
-	@JoinColumn(name = "user_id")
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	@NotNull(message = "User is required")
 	private UserEntity user;
 
 	public Bank() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Bank(int bank_id, String name, UserEntity user) {
-		super();
 		this.bank_id = bank_id;
 		this.name = name;
 		this.user = user;
@@ -56,5 +58,4 @@ public class Bank {
 	public void setUser(UserEntity user) {
 		this.user = user;
 	}
-
 }

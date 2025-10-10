@@ -14,28 +14,45 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
 @Table(name = "repayments")
 public class Repayment {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long repaymentId;
+
+	@NotBlank(message = "Person name is required")
 	private String personName;
+
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
+	@NotNull(message = "User is required")
 	private UserEntity user;
 
 	@Enumerated(EnumType.STRING)
+	@NotNull(message = "Transaction type is required")
 	private TransactionType transactionType;
 
-	@Column(name = "reference_id", nullable = false)
+	@Column(name = "reference_id")
+	@Positive(message = "Reference ID must be positive")
 	private Long referenceId;
 
+	@Positive(message = "Amount must be positive")
 	private double amount;
+
+	@PositiveOrZero(message = "Remaining amount must be zero or positive")
 	private double remainingAmount;
+
+	@PastOrPresent(message = "Repayment date cannot be in the future")
 	private LocalDate repaymentDate;
+
+	@NotBlank(message = "Status is required")
 	private String status;
 
 	@Column(name = "is_deleted")

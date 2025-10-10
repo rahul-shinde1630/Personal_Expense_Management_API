@@ -15,4 +15,6 @@ public interface BorrowedMoneyService {
 	boolean update(BorrowedMoneyRequestDto dto);
 
 	boolean delete(Long id);
+
+	List<BorrowedMoneyResponseDto> getUnpaidByEmail(String email);
 }

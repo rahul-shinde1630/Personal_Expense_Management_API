@@ -15,4 +15,6 @@ public interface LentMoneyService {
 	LentMoneyRequestDto getById(Long lentId);
 
 	boolean update(LentMoneyRequestDto dto);
+
+	List<LentMoneyResponseDto> getUnpaidByEmail(String email);
 }

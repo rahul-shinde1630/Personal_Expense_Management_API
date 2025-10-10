@@ -11,6 +11,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 
 @Entity
 @Table(name = "lent_money")
@@ -22,13 +26,26 @@ public class LentMoney {
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
+	@NotNull(message = "User is required")
 	private UserEntity user;
 
+	@NotBlank(message = "Person name is required")
 	private String personName;
+
+	@Min(value = 1, message = "Amount must be greater than 0")
 	private double amount;
+
+	@NotNull(message = "Lent date is required")
+	@PastOrPresent(message = "Lent date cannot be in the future")
 	private LocalDate lentDate;
+
+	@NotNull(message = "Due date is required")
 	private LocalDate dueDate;
+
+	@NotBlank(message = "Reason is required")
 	private String reason;
+
+	@Min(value = 0, message = "Remaining amount cannot be negative")
 	private double remainingAmount = 0.0;
 
 	private boolean isDeleted = false;
@@ -37,12 +54,14 @@ public class LentMoney {
 	private Status status = Status.PENDING;
 
 	public enum Status {
-		PENDING, PARTIALLY_RECEIVED, RECEIVED
+		PENDING, PARTIAL, PAID
+	}
+
+	public LentMoney() {
 	}
 
 	public LentMoney(Long lentId, UserEntity user, String personName, double amount, LocalDate lentDate,
 			LocalDate dueDate, String reason, double remainingAmount, boolean isDeleted, Status status) {
-		super();
 		this.lentId = lentId;
 		this.user = user;
 		this.personName = personName;
@@ -55,10 +74,7 @@ public class LentMoney {
 		this.status = status;
 	}
 
-	public LentMoney() {
-		// TODO Auto-generated constructor stub
-	}
-
+	// Getters and Setters
 	public Long getLentId() {
 		return lentId;
 	}
@@ -138,5 +154,4 @@ public class LentMoney {
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
-
 }

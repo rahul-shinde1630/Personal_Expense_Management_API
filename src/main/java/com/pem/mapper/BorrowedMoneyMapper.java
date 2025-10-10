@@ -1,5 +1,8 @@
 package com.pem.mapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Component;
 
 import com.pem.dto.borrowedmoney.BorrowedMoneyResponseDto;
@@ -17,7 +20,7 @@ public class BorrowedMoneyMapper {
 		dto.setDueDate(b.getDueDate());
 		dto.setReason(b.getReason());
 		dto.setRemainingAmount(b.getRemainingAmount());
-		dto.setStatus(b.getStatus().toString());
+		dto.setStatus(b.getStatus().name());
 		return dto;
 	}
 
@@ -30,7 +33,12 @@ public class BorrowedMoneyMapper {
 		dto.setDueDate(entity.getDueDate());
 		dto.setReason(entity.getReason());
 		dto.setRemainingAmount(entity.getRemainingAmount());
+		dto.setStatus(entity.getStatus().name());
 		return dto;
+	}
+
+	public List<BorrowedMoneyResponseDto> toResponseDto(List<BorrowedMoney> entities) {
+		return entities.stream().map(this::toResponseDto).collect(Collectors.toList());
 	}
 
 }

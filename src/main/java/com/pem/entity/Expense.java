@@ -2,6 +2,8 @@ package com.pem.entity;
 
 import java.time.LocalDate;
 
+import org.hibernate.validator.constraints.Length;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,6 +11,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 @Table(name = "expenses")
@@ -17,30 +22,44 @@ public class Expense {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+
+	@Positive(message = "Amount must be greater than zero")
 	private double amount;
+
+	@NotNull(message = "Expense date is required")
 	private LocalDate expenseDate;
+
+	@NotBlank(message = "Expense time cannot be blank")
+	@Length(max = 10, message = "Expense time should not exceed 10 characters (e.g. '10:30 AM')")
 	private String expenseTime;
+
+	@NotBlank(message = "Payment mode cannot be blank")
 	private String paymentMode;
+
 	private boolean isDeleted = false;
+
 	@ManyToOne
-	@JoinColumn(name = "category_id")
+	@JoinColumn(name = "category_id", nullable = false)
+	@NotNull(message = "Category is required")
 	private Category category;
 
 	@ManyToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", nullable = false)
+	@NotNull(message = "User is required")
 	private UserEntity user;
+
 	@ManyToOne
-	@JoinColumn(name = "bank_id")
+	@JoinColumn(name = "bank_id", nullable = false)
+	@NotNull(message = "Bank account is required")
 	private Bank account;
 
+	// Default constructor
 	public Expense() {
-		// TODO Auto-generated constructor stub
 	}
 
-	// Constructors, Getters, Setters...
+	// Parameterized constructor
 	public Expense(int id, double amount, LocalDate expenseDate, String expenseTime, String paymentMode,
 			boolean isDeleted, Category category, UserEntity user, Bank account) {
-		super();
 		this.id = id;
 		this.amount = amount;
 		this.expenseDate = expenseDate;
@@ -52,20 +71,13 @@ public class Expense {
 		this.account = account;
 	}
 
-	public int getId() {
+	// Getters and Setters
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public Bank getAccount() {
-		return account;
-	}
-
-	public void setAccount(Bank account) {
-		this.account = account;
 	}
 
 	public double getAmount() {
@@ -92,28 +104,12 @@ public class Expense {
 		this.expenseTime = expenseTime;
 	}
 
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setCategory(Category category) {
-		this.category = category;
-	}
-
 	public String getPaymentMode() {
 		return paymentMode;
 	}
 
-	public void setPaymentMode(String string) {
-		this.paymentMode = string;
-	}
-
-	public UserEntity getUser() {
-		return user;
-	}
-
-	public void setUser(UserEntity user) {
-		this.user = user;
+	public void setPaymentMode(String paymentMode) {
+		this.paymentMode = paymentMode;
 	}
 
 	public boolean isDeleted() {
@@ -124,4 +120,27 @@ public class Expense {
 		this.isDeleted = isDeleted;
 	}
 
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+
+	public UserEntity getUser() {
+		return user;
+	}
+
+	public void setUser(UserEntity user) {
+		this.user = user;
+	}
+
+	public Bank getAccount() {
+		return account;
+	}
+
+	public void setAccount(Bank account) {
+		this.account = account;
+	}
 }

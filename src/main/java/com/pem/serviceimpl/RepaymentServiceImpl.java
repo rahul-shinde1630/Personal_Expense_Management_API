@@ -50,10 +50,10 @@ public class RepaymentServiceImpl implements RepaymentService {
 				lent.setRemainingAmount(newRemaining);
 
 				if (newRemaining <= 0) {
-					lent.setStatus(LentMoney.Status.RECEIVED);
+					lent.setStatus(LentMoney.Status.PAID);
 					lent.setRemainingAmount(0);
 				} else {
-					lent.setStatus(LentMoney.Status.PARTIALLY_RECEIVED);
+					lent.setStatus(LentMoney.Status.PARTIAL);
 				}
 				lentMoneyRepository.save(lent);
 			});
@@ -63,10 +63,10 @@ public class RepaymentServiceImpl implements RepaymentService {
 				borrowed.setRemainingAmount(newRemaining);
 
 				if (newRemaining <= 0) {
-					borrowed.setStatus(BorrowedMoney.Status.Paid);
+					borrowed.setStatus(BorrowedMoney.Status.PAID);
 					borrowed.setRemainingAmount(0);
 				} else {
-					borrowed.setStatus(BorrowedMoney.Status.Partially_Paid);
+					borrowed.setStatus(BorrowedMoney.Status.PARTIAL);
 				}
 				borrowedMoneyRepository.save(borrowed);
 			});

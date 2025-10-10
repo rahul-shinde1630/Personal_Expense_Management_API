@@ -11,6 +11,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "borrowed_money")
@@ -21,32 +24,42 @@ public class BorrowedMoney {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", nullable = false)
+	@NotNull(message = "User is required")
 	private UserEntity user;
 
+	@NotBlank(message = "Person name is required")
 	private String personName;
+
+	@Min(value = 0, message = "Amount must be non-negative")
 	private double amount;
+
+	@NotNull(message = "Borrowed date is required")
 	private LocalDate borrowedDate;
+
+	@NotNull(message = "Due date is required")
 	private LocalDate dueDate;
+
 	private String reason;
+
+	@Min(value = 0, message = "Remaining amount must be non-negative")
 	private double remainingAmount;
 
 	@Enumerated(EnumType.STRING)
-	private Status status;
+	@NotNull(message = "Status is required")
+	private Status status = Status.PENDING;
 
 	public enum Status {
-		Pending, Partially_Paid, Paid
+		PENDING, PARTIAL, PAID
 	}
 
 	private boolean isDeleted = false;
 
 	public BorrowedMoney() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public BorrowedMoney(Long id, UserEntity user, String personName, double amount, LocalDate borrowedDate,
 			LocalDate dueDate, String reason, double remainingAmount, Status status, boolean isDeleted) {
-		super();
 		this.id = id;
 		this.user = user;
 		this.personName = personName;
@@ -59,13 +72,12 @@ public class BorrowedMoney {
 		this.isDeleted = isDeleted;
 	}
 
-	// getters & setters
-
+	// Getters and setters
 	public Long getId() {
 		return id;
 	}
 
-	public void id(Long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -140,9 +152,4 @@ public class BorrowedMoney {
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 }

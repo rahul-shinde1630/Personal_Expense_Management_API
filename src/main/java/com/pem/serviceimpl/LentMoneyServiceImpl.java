@@ -1,6 +1,7 @@
 package com.pem.serviceimpl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +35,7 @@ public class LentMoneyServiceImpl implements LentMoneyService {
 
 	@Override
 	public List<LentMoneyResponseDto> getByEmail(String email) {
-		List<LentMoney> list = repository.findByUserEmail(email);
+		List<LentMoney> list = repository.findByUserEmailAndIsDeletedFalse(email);
 		List<LentMoneyResponseDto> dtoList = new ArrayList<>();
 
 		for (LentMoney entity : list) {
@@ -92,6 +93,24 @@ public class LentMoneyServiceImpl implements LentMoneyService {
 			System.out.println("LentMoney not found with id: " + dto.getLentId());
 			return false;
 		}
+	}
+
+	@Override
+	public List<LentMoneyResponseDto> getUnpaidByEmail(String email) {
+		if (email == null || email.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		LentMoney.Status paidStatus = LentMoney.Status.PAID;
+
+		List<LentMoney> lentList = repository.findUnpaidByEmail(email, paidStatus);
+
+		// Convert to DTOs using lambda
+		List<LentMoneyResponseDto> dtoList = new ArrayList<>();
+		for (LentMoney entity : lentList) {
+			dtoList.add(LentMoneyMapper.toDto(entity));
+		}
+		return dtoList;
 	}
 
 }

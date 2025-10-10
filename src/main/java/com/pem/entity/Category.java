@@ -11,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "categories")
@@ -20,27 +22,29 @@ public class Category {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int category_id;
 
+	@NotBlank(message = "Category name is required")
 	private String name;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
+	@NotNull(message = "User is required")
 	private UserEntity user;
 
 	@Enumerated(EnumType.STRING)
+	@NotNull(message = "Category type is required")
 	private CategoryType type;
 
 	public Category() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Category(int category_id, String name, UserEntity user, CategoryType type) {
-		super();
 		this.category_id = category_id;
 		this.name = name;
 		this.user = user;
 		this.type = type;
 	}
 
+	// Getters and Setters
 	public int getCategory_id() {
 		return category_id;
 	}
@@ -72,5 +76,4 @@ public class Category {
 	public void setType(CategoryType type) {
 		this.type = type;
 	}
-
 }

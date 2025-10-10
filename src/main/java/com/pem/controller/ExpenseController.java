@@ -1,5 +1,6 @@
 package com.pem.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import com.pem.dto.expense.ExpenseDto;
 import com.pem.dto.expense.ExpenseRequestDto;
 import com.pem.dto.expense.ExpenseResponseDto;
 import com.pem.dto.expense.UpdateExpenseDto;
+import com.pem.entity.Expense;
 import com.pem.service.ExpenseService;
 
 @RestController
@@ -32,10 +34,14 @@ public class ExpenseController {
 	private ExpenseService expenseService;
 
 	@PostMapping("/expenses/saveExpense")
-	public ResponseEntity<?> addExpense(@RequestBody ExpenseRequestDto dto) {
+	public ResponseEntity<String> addExpense(@RequestBody ExpenseRequestDto dto) {
+		Expense isSaved = expenseService.saveExpense(dto);
 
-		boolean savedExpense = expenseService.saveExpense(dto);
-		return ResponseEntity.ok(savedExpense);
+		if (isSaved != null) {
+			return ResponseEntity.ok("Expense saved successfully!");
+		} else {
+			return ResponseEntity.badRequest().body("Failed to save expense. Please check your input data.");
+		}
 	}
 
 	@GetMapping("/date-range")
@@ -69,6 +75,12 @@ public class ExpenseController {
 		} else {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Expense not found for user.");
 		}
+	}
+
+	@GetMapping("/expenses/by-date/{date}")
+	public List<ExpenseResponseDto> getExpensesByDate(@PathVariable String date) {
+		LocalDate localDate = LocalDate.parse(date);
+		return expenseService.getExpensesByDate(localDate);
 	}
 
 	@DeleteMapping("/delete/{id}")
