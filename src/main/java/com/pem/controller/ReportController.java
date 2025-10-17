@@ -18,18 +18,18 @@ public class ReportController {
 	private ReportService reportService;
 
 	@GetMapping("/income")
-	public Double getIncome(@RequestParam String email, @RequestParam int month, @RequestParam int year) {
-		return reportService.getIncomeByUserAndMonthAndYear(email, month, year);
+	public Double getIncome(@RequestParam String email, @RequestParam int fromYear, @RequestParam int toYear) {
+		return reportService.getTotalIncomeBetweenYears(email, fromYear, toYear);
 	}
 
 	@GetMapping("/expense")
-	public Double getExpense(@RequestParam String email, @RequestParam int month, @RequestParam int year) {
-		return reportService.getExpenseByUserAndMonthAndYear(email, month, year);
+	public Double getExpense(@RequestParam String email, @RequestParam int fromYear, @RequestParam int toYear) {
+		return reportService.getTotalExpenseBetweenYears(email, fromYear, toYear);
 	}
 
 	@GetMapping("/borrowedRemaining")
-	public Double getBorrowedRemaining(@RequestParam String email, @RequestParam int month, @RequestParam int year) {
-		return reportService.getBorrowedRemaining(email, month, year);
+	public Double getBorrowedRemaining(@RequestParam String email, @RequestParam int fromYear,
+			@RequestParam int toYear) {
+		return reportService.getBorrowedRemainingBetweenYears(email, fromYear, toYear);
 	}
-
 }

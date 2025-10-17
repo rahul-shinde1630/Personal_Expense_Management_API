@@ -15,6 +15,8 @@ import com.pem.repository.UserRepository;
 import com.pem.service.EmailService;
 import com.pem.service.ForgotPasswordService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
@@ -28,14 +30,22 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 	private EmailService emailService;
 
 	@Override
+	@Transactional
 	public String sendOtp(ForgotPasswordRequest request) {
+		UserEntity user = userRepo.findByEmail(request.getEmail());
+		if (user == null) {
+			throw new RuntimeException("No user found with email: " + request.getEmail());
+		}
+
+		otpRepo.deleteByUser(user); // Delete old OTPs
+
 		String otp = String.format("%06d", new Random().nextInt(999999));
-		otpRepo.deleteByEmail(request.getEmail());
 
 		OtpVerification otpEntity = new OtpVerification();
-		otpEntity.setEmail(request.getEmail());
+		otpEntity.setUser(user);
 		otpEntity.setOtp(otp);
 		otpEntity.setExpiryTime(LocalDateTime.now().plusMinutes(5));
+
 		otpRepo.save(otpEntity);
 
 		emailService.sendEmail(request.getEmail(), "OTP for Password Reset", "Your OTP is: " + otp);
@@ -43,15 +53,37 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 	}
 
 	@Override
-	public String validateOtpAndResetPassword(OtpValidationRequest request) {
-		OtpVerification otpEntity = otpRepo.findByEmailAndOtp(request.getEmail(), request.getOtp())
+	public boolean verifyOtp(OtpValidationRequest request) {
+		// Trim and normalize email
+		String email = request.getEmail().trim().toLowerCase();
+
+		// Fetch user safely
+		UserEntity user = userRepo.findByEmail(email);
+		if (user == null) {
+			throw new RuntimeException("User not found with email: " + email);
+		}
+
+		// Fetch OTP
+		OtpVerification otpEntity = otpRepo.findByUserAndOtp(user, request.getOtp())
 				.orElseThrow(() -> new RuntimeException("Invalid OTP"));
 
+		// Check expiry
 		if (otpEntity.getExpiryTime().isBefore(LocalDateTime.now())) {
 			throw new RuntimeException("OTP Expired");
 		}
-		UserEntity user = userRepo.findByEmail(request.getEmail());
 
+		// OTP is valid
+		return true;
+	}
+
+	@Override
+	@Transactional
+	public String resetPassword(OtpValidationRequest request) {
+		if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+			throw new RuntimeException("Passwords do not match");
+		}
+
+		UserEntity user = userRepo.findByEmail(request.getEmail());
 		if (user == null) {
 			throw new RuntimeException("User not found");
 		}
@@ -59,7 +91,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 		user.setPassword(request.getNewPassword());
 		userRepo.save(user);
 
-		otpRepo.deleteByEmail(request.getEmail());
-		return "Password reset successful";
+		otpRepo.deleteByUser(user); // Remove OTPs after reset
+		return "Password reset successfully!";
 	}
 }

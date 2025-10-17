@@ -3,9 +3,12 @@ package com.pem.entity;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -16,22 +19,18 @@ public class OtpVerification {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String email;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
+	private UserEntity user;
+
 	private String otp;
+
 	private LocalDateTime expiryTime;
 
 	public OtpVerification() {
-		// TODO Auto-generated constructor stub
 	}
 
-	public OtpVerification(Long id, String email, String otp, LocalDateTime expiryTime) {
-		super();
-		this.id = id;
-		this.email = email;
-		this.otp = otp;
-		this.expiryTime = expiryTime;
-	}
-
+	// getters and setters
 	public Long getId() {
 		return id;
 	}
@@ -40,12 +39,12 @@ public class OtpVerification {
 		this.id = id;
 	}
 
-	public String getEmail() {
-		return email;
+	public UserEntity getUser() {
+		return user;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setUser(UserEntity user) {
+		this.user = user;
 	}
 
 	public String getOtp() {
@@ -63,5 +62,4 @@ public class OtpVerification {
 	public void setExpiryTime(LocalDateTime expiryTime) {
 		this.expiryTime = expiryTime;
 	}
-
 }

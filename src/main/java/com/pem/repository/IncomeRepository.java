@@ -49,9 +49,9 @@ public interface IncomeRepository extends JpaRepository<Income, Long> {
 	// For simple entity usage
 	Page<Income> findByUserAndIsDeletedFalse(UserEntity user, Pageable pageable);
 
-	@Query("SELECT COALESCE(SUM(i.amount), 0) FROM Income i "
-			+ "WHERE i.user.id = :userId AND i.incomeDate BETWEEN :start AND :end")
-	Double findByUserAndMonthYearAndIsDeletedFalse(@Param("userId") int userId, @Param("start") LocalDate start,
+	@Query("SELECT COALESCE(SUM(i.amount), 0) FROM Income i " + "WHERE i.user.email = :email AND i.isDeleted = false "
+			+ "AND i.incomeDate BETWEEN :start AND :end")
+	Double findTotalIncomeBetween(@Param("email") String email, @Param("start") LocalDate start,
 			@Param("end") LocalDate end);
 
 	@Query("SELECT i.category.name, SUM(i.amount) " + "FROM Income i "

@@ -1,9 +1,10 @@
 package com.pem.service;
 
 public interface ReportService {
-	Double getIncomeByUserAndMonthAndYear(String email, int month, int year);
 
-	Double getExpenseByUserAndMonthAndYear(String email, int month, int year);
+	Double getTotalIncomeBetweenYears(String email, int fromYear, int toYear);
 
-	Double getBorrowedRemaining(String email, int month, int year);
+	Double getTotalExpenseBetweenYears(String email, int fromYear, int toYear);
+
+	Double getBorrowedRemainingBetweenYears(String email, int fromYear, int toYear);
 }
